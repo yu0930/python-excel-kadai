@@ -1,0 +1,58 @@
+import openpyxl
+from openpyxl.utils.cell import column_index_from_string
+
+workbook = openpyxl.Workbook()
+ws = workbook.active
+
+ws.column_dimensions['E'].width = 12
+
+ws['B2'] = '請求書'
+
+ws['B4'] = '株式会社ABC'
+ws['B5'] = '〒101-0022 東京都千代田区神田練塀町300'
+ws['B6'] = 'TEL:03-1234-5678 FAX:03-1234-5678'
+ws['B7'] = '担当者名:鈴木一郎 様'
+
+ws['F4'] = 'No.'
+
+ws['G4'] = '0001'
+
+ws['F5'] = '日付'
+
+from datetime import datetime
+
+today = datetime.today()
+
+ws['G5'] = (today.strftime("%Y/%m/%d"))
+
+header = ['商品名', '数量', '単価', '金額']
+
+start_col = 'B'
+start_row = 10
+
+for i, h in enumerate(header, start=0):
+    ws.cell(row=start_row, column=column_index_from_string(start_col)+i).value = h
+
+data2 = [['商品A', 2, 10000, 20000],
+        ['商品B', 1, 15000, 15000],
+        ]
+
+for r, row in enumerate(data2, start=start_row + 1):
+    for c, item in enumerate(row, start=0):
+        ws.cell(row=r, column=column_index_from_string(start_col)+c).value = item
+
+ws['B15'] = '小計'
+
+ws['E15'] = 35000
+
+ws['B16'] = '消費税'
+
+ws['E16'] = 35000*0.1
+
+ws['B17'] = '合計'
+
+ws['E17'] = 35000+3500
+
+seikyuusyo = f"請求書_{today.strftime('%Y%m%d')}.xlsx"
+
+workbook.save(seikyuusyo)
